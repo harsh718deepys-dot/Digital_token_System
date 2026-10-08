@@ -17,9 +17,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401 responses
+// Handle 401 responses & HTML responses from SPA catch-alls
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If an API request returns an HTML page (e.g. Vercel SPA rewrote a missing /api route to index.html)
+    if (
+      typeof response.data === 'string' &&
+      (response.data.trim().startsWith('<!DOCTYPE html') ||
+        response.data.trim().startsWith('<html') ||
+        response.data.includes('<div id="root">'))
+    ) {
+      return Promise.reject(new Error('Backend endpoint unavailable (received HTML). Please verify backend is running.'));
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');

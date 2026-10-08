@@ -24,14 +24,22 @@ export default function GenerateToken() {
 
   useEffect(() => {
     locationAPI.getAll()
-      .then(res => setLocations(res.data))
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          setLocations(res.data);
+        }
+      })
       .catch(() => {});
   }, []);
 
   useEffect(() => {
     if (form.locationId) {
       locationAPI.getServices(form.locationId)
-        .then(res => setServices(res.data))
+        .then(res => {
+          if (Array.isArray(res.data)) {
+            setServices(res.data);
+          }
+        })
         .catch(() => {});
     }
   }, [form.locationId]);

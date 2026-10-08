@@ -9,22 +9,27 @@ const typeIcons = {
   'Railway Station': '🚆', Hospital: '🏥', Event: '🎪'
 };
 
+const DEFAULT_LOCATIONS = [
+  { id: 1, name: 'Shree Mahalakshmi Temple', type: 'Temple', description: 'Darshan / Prasad', imageUrl: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=400' },
+  { id: 2, name: 'SBI Kothrud Branch', type: 'Bank', description: 'Banking Services', imageUrl: 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?w=400' },
+  { id: 3, name: 'Pune Railway Station', type: 'Railway Station', description: 'Ticketing', imageUrl: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400' },
+  { id: 4, name: 'Pune RTO', type: 'Government Office', description: 'Document Services', imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400' },
+  { id: 5, name: 'CityCare Diagnostic Centre', type: 'Hospital', description: 'OPD / Billing', imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400' },
+  { id: 6, name: 'Government Office', type: 'Government Office', description: 'Document Verification', imageUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400' },
+];
+
 export default function LandingPage() {
-  const [locations, setLocations] = useState([]);
+  const [locations, setLocations] = useState(DEFAULT_LOCATIONS);
 
   useEffect(() => {
     locationAPI.getAll()
-      .then(res => setLocations(res.data))
+      .then(res => {
+        if (Array.isArray(res.data) && res.data.length > 0) {
+          setLocations(res.data);
+        }
+      })
       .catch(() => {
-        // Demo data fallback
-        setLocations([
-          { id: 1, name: 'Shree Mahalakshmi Temple', type: 'Temple', description: 'Darshan / Prasad', imageUrl: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=400' },
-          { id: 2, name: 'SBI Kothrud Branch', type: 'Bank', description: 'Banking Services', imageUrl: 'https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?w=400' },
-          { id: 3, name: 'Pune Railway Station', type: 'Railway Station', description: 'Ticketing', imageUrl: 'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400' },
-          { id: 4, name: 'Pune RTO', type: 'Government Office', description: 'Document Services', imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400' },
-          { id: 5, name: 'CityCare Diagnostic Centre', type: 'Hospital', description: 'OPD / Billing', imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400' },
-          { id: 6, name: 'Government Office', type: 'Government Office', description: 'Document Verification', imageUrl: 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400' },
-        ]);
+        // Fallback already in place
       });
   }, []);
 
@@ -80,7 +85,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <Row className="g-3">
-            {locations.slice(0, 6).map((loc) => (
+            {Array.isArray(locations) && locations.slice(0, 6).map((loc) => (
               <Col key={loc.id} xs={6} sm={4} md={3} lg={2}>
                 <Link to="/generate-token" className="text-decoration-none">
                   <div className="location-card">
