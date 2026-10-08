@@ -1,12 +1,15 @@
 # Dependencies
 node_modules/
+**/node_modules/
 .pnp
 .pnp.js
 
 # Production build outputs
 dist/
+**/dist/
 build/
 target/
+**/target/
 *.jar
 *.war
 
